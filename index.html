@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background-attachment: fixed;
+        background-image: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        background-repeat: no-repeat;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      .navbar {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .navbar-brand {
+        font-size: 24px;
+        color: #ffffff;
+      }
+
+      .navbar-link {
+        color: #ffffff;
+        text-decoration: none;
+        margin-left: 15px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-top: 100px;
+        color: #ffffff;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+      }
+
+      .search-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .search-input {
+        width: 50%;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .search-button {
+        background-color: #ffffff;
+        color: #fda085;
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        margin-left: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+
+      .loader {
+        display: none;
+        margin: 30px auto;
+        width: 60px;
+        height: 40px;
+        text-align: center;
+        font-size: 10px;
+      }
+
+      .loader > div {
+        background-color: #ffffff;
+        height: 100%;
+        width: 6px;
+        display: inline-block;
+        margin: 0 1px;
+        animation: sk-stretchdelay 1.2s infinite ease-in-out;
+      }
+
+      .loader .rect2 {
+        animation-delay: -1.1s;
+      }
+
+      .loader .rect3 {
+        animation-delay: -1s;
+      }
+
+      .loader .rect4 {
+        animation-delay: -0.9s;
+      }
+
+      .loader .rect5 {
+        animation-delay: -0.8s;
+      }
+
+      @keyframes sk-stretchdelay {
+        0%,
+        40%,
+        100% {
+          transform: scaleY(0.4);
+        }
+        20% {
+          transform: scaleY(1);
+        }
+      }
+
+      .result-container {
+        color: #ffffff;
+        margin: 30px auto;
+        width: 50%;
+      }
+
+      .result-container h2 {
+        margin-bottom: 10px;
+      }
+
+      .result-container ul {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .result-container li {
+        margin-bottom: 5px;
+      }
+    </style>
+    <title>MealMatch</title>
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="#" class="navbar-brand">MealMatch</a>
+      <a
+        href="#"
+        class="navbar-link"
+        data-bs-toggle="modal"
+        data-bs-target="#aboutModal"
+        >About</a
+      >
+    </nav>
+
+    <div class="hero">
+      <h1>Find your Meal and seal the Deal!</h1>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Meal name" />
+      <button class="search-button">Search</button>
+    </div>
+
+    <div class="loader">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+
+    <div class="result-container"></div>
+
+    <!-- About Modal -->
+    <div
+      class="modal fade"
+      id="aboutModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">About MealMatch</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            MealMatch was created out of a desire to experiment with the OpenAI
+            GPT API. Our goal is to provide users with detailed information
+            about various meals, making it easy to discover new recipes and
+            enjoy delicious dishes!
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        $(".search-button").on("click", function () {
+          $(".result-container").html("");
+          $(".loader").css("display", "block");
+          fetch(
+            "https://api.dealmatch.xyz/api/get-meal?meal=" +
+              $(".search-input").val()
+          )
+            .then((res) => res.json())
+            .then((data) => {
+              if (!data.error) showResult(data);
+              else {
+                alert(data.message);
+              }
+            })
+            .finally(() => $(".loader").css("display", "none"));
+        });
+
+        function showResult(resultData) {
+          var resultHtml = "<h2>" + resultData.meal_name + "</h2>";
+          resultHtml += "<p>" + resultData.description + "</p>";
+          resultHtml +=
+            "<p>Time required: " + resultData.time_required + "</p>";
+
+          resultHtml += "<h3>Ingredients:</h3><ul>";
+          resultData.ingredients.forEach(function (ingredient) {
+            resultHtml += "<li>" + ingredient + "</li>";
+          });
+          resultHtml += "</ul>";
+
+          resultHtml += "<h3>Steps:</h3><ol class='pb-5'>";
+          resultData.steps.forEach(function (step) {
+            resultHtml += "<li>" + step + "</li>";
+          });
+          resultHtml += "</ol>";
+
+          $(".result-container").html(resultHtml);
+        }
+      });
+    </script>
+  </body>
+</html>
